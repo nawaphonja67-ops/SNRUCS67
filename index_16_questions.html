@@ -1,0 +1,2185 @@
+<!DOCTYPE html>
+<html lang="th">
+
+<head>
+    <meta charset="UTF-8">
+
+    <meta
+        name="viewport"
+        content="width=device-width, initial-scale=1.0"
+    >
+
+    <title>แบบสอบถามการรับรู้สีจากภาพ</title>
+
+    <style>
+
+    /* ==================================================
+       MODERN CREAM THEME
+    ================================================== */
+
+    * {
+        box-sizing: border-box;
+        margin: 0;
+        padding: 0;
+    }
+
+    :root {
+        --cream-bg: #F5F0E7;
+        --cream-light: #FFFCF7;
+        --cream-soft: #EEE6D8;
+        --cream-dark: #DED2BF;
+
+        --brown: #594C40;
+        --brown-soft: #817466;
+        --brown-light: #A89A8A;
+
+        --accent: #927A60;
+        --accent-dark: #735F4C;
+
+        --border: #E5DCCD;
+        --white: #FFFFFF;
+
+        --success: #607A64;
+        --danger: #A35F55;
+    }
+
+
+    body {
+        min-height: 100vh;
+
+        font-family:
+            "Segoe UI",
+            "Noto Sans Thai",
+            Tahoma,
+            Arial,
+            sans-serif;
+
+        color: var(--brown);
+
+        background:
+            radial-gradient(
+                circle at 10% 10%,
+                rgba(255,255,255,0.85),
+                transparent 30%
+            ),
+            radial-gradient(
+                circle at 90% 90%,
+                rgba(222,210,191,0.45),
+                transparent 30%
+            ),
+            var(--cream-bg);
+
+        padding: 40px 18px;
+    }
+
+
+    button {
+        font-family: inherit;
+    }
+
+
+    /* ==================================================
+       CONTAINER
+    ================================================== */
+
+    .container {
+        width: 100%;
+        max-width: 900px;
+        margin: auto;
+    }
+
+
+    .card {
+        position: relative;
+
+        background:
+            rgba(255, 252, 247, 0.94);
+
+        border:
+            1px solid rgba(222, 210, 191, 0.8);
+
+        border-radius: 28px;
+
+        padding: 45px;
+
+        box-shadow:
+            0 20px 50px
+            rgba(89, 76, 64, 0.08);
+
+        backdrop-filter: blur(10px);
+
+        overflow: hidden;
+    }
+
+
+    /* เส้นตกแต่งด้านบน */
+
+    .card::before {
+        content: "";
+
+        position: absolute;
+
+        top: 0;
+        left: 0;
+
+        width: 100%;
+        height: 5px;
+
+        background:
+            linear-gradient(
+                90deg,
+                #C7B49B,
+                #8E7962,
+                #C7B49B
+            );
+    }
+
+
+    .hidden {
+        display: none;
+    }
+
+
+    /* ==================================================
+       LOGO
+    ================================================== */
+
+    .logo {
+        width: 78px;
+        height: 78px;
+
+        margin: 0 auto 22px;
+
+        display: flex;
+        align-items: center;
+        justify-content: center;
+
+        border-radius: 24px;
+
+        font-size: 34px;
+
+        background:
+            linear-gradient(
+                145deg,
+                #E8DDCD,
+                #CBB99F
+            );
+
+        box-shadow:
+            0 12px 28px
+            rgba(89, 76, 64, 0.12);
+    }
+
+
+    /* ==================================================
+       TEXT
+    ================================================== */
+
+    h1 {
+        text-align: center;
+
+        font-size: 30px;
+        font-weight: 700;
+
+        color: #4E4339;
+
+        letter-spacing: -0.4px;
+
+        margin-bottom: 12px;
+    }
+
+
+    .subtitle {
+        max-width: 650px;
+
+        margin: auto;
+
+        text-align: center;
+
+        color: var(--brown-soft);
+
+        font-size: 15px;
+
+        line-height: 1.9;
+    }
+
+
+    /* ==================================================
+       INFO
+    ================================================== */
+
+    .info {
+        margin-top: 32px;
+
+        padding: 22px 24px;
+
+        border-radius: 18px;
+
+        background: #F4EEE4;
+
+        border: 1px solid #E4D8C7;
+
+        color: #746657;
+
+        line-height: 1.9;
+    }
+
+
+    .info strong {
+        color: #695746;
+
+        font-size: 16px;
+    }
+
+
+    /* ==================================================
+       SECTION
+    ================================================== */
+
+    .section-title {
+        margin-top: 32px;
+        margin-bottom: 8px;
+
+        font-size: 18px;
+        font-weight: 700;
+
+        color: #51453B;
+    }
+
+
+    .gender-title {
+        margin-bottom: 15px;
+
+        color: var(--brown-soft);
+
+        font-size: 14px;
+    }
+
+
+    /* ==================================================
+       GENDER
+    ================================================== */
+
+    .gender-grid {
+        display: grid;
+
+        grid-template-columns:
+            repeat(2, 1fr);
+
+        gap: 13px;
+    }
+
+
+    .gender-card {
+        position: relative;
+
+        cursor: pointer;
+    }
+
+
+    .gender-card input {
+        position: absolute;
+
+        opacity: 0;
+    }
+
+
+    .gender-card span {
+        min-height: 60px;
+
+        display: flex;
+        align-items: center;
+        justify-content: center;
+
+        padding: 13px;
+
+        border-radius: 16px;
+
+        border: 1.5px solid var(--border);
+
+        background: #FFFCF8;
+
+        color: #6D6054;
+
+        font-weight: 600;
+
+        transition:
+            all 0.2s ease;
+    }
+
+
+    .gender-card:hover span {
+        border-color: #BDAA91;
+
+        background: #F7F0E6;
+
+        transform:
+            translateY(-2px);
+    }
+
+
+    .gender-card input:checked + span {
+        border-color: #90775E;
+
+        background: #EDE2D3;
+
+        color: #594838;
+
+        box-shadow:
+            0 5px 15px
+            rgba(89, 76, 64, 0.10);
+    }
+
+
+    /* ==================================================
+       BUTTON
+    ================================================== */
+
+    .main-btn {
+        width: 100%;
+
+        margin-top: 30px;
+
+        padding: 16px 20px;
+
+        border: none;
+
+        border-radius: 16px;
+
+        background:
+            linear-gradient(
+                135deg,
+                #9B8369,
+                #75604D
+            );
+
+        color: #FFFDF9;
+
+        font-size: 16px;
+        font-weight: 700;
+
+        cursor: pointer;
+
+        box-shadow:
+            0 10px 22px
+            rgba(89, 76, 64, 0.18);
+
+        transition:
+            all 0.2s ease;
+    }
+
+
+    .main-btn:hover:not(:disabled) {
+        transform:
+            translateY(-2px);
+
+        box-shadow:
+            0 14px 28px
+            rgba(89, 76, 64, 0.23);
+    }
+
+
+    .main-btn:active:not(:disabled) {
+        transform:
+            translateY(0);
+    }
+
+
+    .main-btn:disabled {
+        background: #D8CFC3;
+
+        color: #A79B8F;
+
+        cursor: not-allowed;
+
+        box-shadow: none;
+    }
+
+
+    /* ==================================================
+       ERROR
+    ================================================== */
+
+    .error {
+        min-height: 20px;
+
+        margin-top: 15px;
+
+        text-align: center;
+
+        color: var(--danger);
+
+        font-size: 14px;
+    }
+
+
+    /* ==================================================
+       QUIZ HEADER
+    ================================================== */
+
+    .quiz-header {
+        display: flex;
+
+        justify-content:
+            space-between;
+
+        align-items: center;
+
+        color: #8B7B6D;
+
+        font-size: 14px;
+        font-weight: 600;
+    }
+
+
+    /* ==================================================
+       PROGRESS
+    ================================================== */
+
+    .progress-background {
+        width: 100%;
+        height: 8px;
+
+        margin-top: 15px;
+
+        background: #EAE1D5;
+
+        border-radius: 50px;
+
+        overflow: hidden;
+    }
+
+
+    .progress {
+        width: 0;
+        height: 100%;
+
+        border-radius: 50px;
+
+        background:
+            linear-gradient(
+                90deg,
+                #C4A988,
+                #816A54
+            );
+
+        transition:
+            width 0.35s ease;
+    }
+
+
+    /* ==================================================
+       QUESTION
+    ================================================== */
+
+    .question-title {
+        margin:
+            38px 0 9px;
+
+        text-align: center;
+
+        color: #4F443A;
+
+        font-size: 24px;
+        font-weight: 700;
+    }
+
+
+    .question-description {
+        margin-bottom: 27px;
+
+        text-align: center;
+
+        color: #88796C;
+
+        line-height: 1.7;
+
+        font-size: 14px;
+    }
+
+
+    /* ==================================================
+       ORIGINAL IMAGE
+    ================================================== */
+
+    .original-label {
+        width: fit-content;
+
+        margin:
+            0 auto 12px;
+
+        padding:
+            7px 15px;
+
+        border-radius: 50px;
+
+        background: #ECE1D2;
+
+        color: #75614E;
+
+        font-size: 12px;
+        font-weight: 700;
+    }
+
+
+    .original-image {
+        width: 100%;
+        max-width: 440px;
+        height: 285px;
+
+        margin: auto;
+
+        display: flex;
+        align-items: center;
+        justify-content: center;
+
+        border-radius: 22px;
+
+        overflow: hidden;
+
+        background: #F5F2ED;
+
+        border:
+            1px solid #E3D9CC;
+
+        box-shadow:
+            0 12px 28px
+            rgba(89, 76, 64, 0.08);
+    }
+
+
+    .original-image img {
+        width: 100%;
+        height: 100%;
+
+        object-fit: contain;
+    }
+
+
+    /* ==================================================
+       OPTIONS
+    ================================================== */
+
+    .choose-text {
+        margin:
+            34px 0 17px;
+
+        text-align: center;
+
+        color: #594C40;
+
+        font-weight: 700;
+    }
+
+
+    .options {
+        display: grid;
+
+        grid-template-columns:
+            repeat(2, 1fr);
+
+        gap: 17px;
+    }
+
+
+    .option {
+        position: relative;
+
+        padding: 0;
+
+        border:
+            2px solid #E5DDD2;
+
+        border-radius: 20px;
+
+        overflow: hidden;
+
+        background: #FFFCF8;
+
+        color: inherit;
+
+        cursor: pointer;
+
+        transition:
+            all 0.22s ease;
+    }
+
+
+    .option:hover {
+        border-color: #BBA88F;
+
+        transform:
+            translateY(-4px);
+
+        box-shadow:
+            0 12px 26px
+            rgba(89, 76, 64, 0.10);
+    }
+
+
+    .option.selected {
+        border-color: #826B55;
+
+        background: #EEE3D5;
+
+        transform:
+            translateY(-2px);
+
+        box-shadow:
+            0 10px 25px
+            rgba(89, 76, 64, 0.16);
+    }
+
+
+    .option img {
+        display: block;
+
+        width: 100%;
+        height: 210px;
+
+        object-fit: contain;
+
+        background: #F7F5F1;
+    }
+
+
+    .option-name {
+        padding: 14px;
+
+        text-align: center;
+
+        background: #FFFCF8;
+
+        color: #6D5E50;
+
+        font-size: 15px;
+        font-weight: 700;
+
+        transition:
+            0.2s ease;
+    }
+
+
+    .option.selected
+    .option-name {
+        background: #EEE3D5;
+
+        color: #594737;
+    }
+
+
+    /* ==================================================
+       SENDING
+    ================================================== */
+
+    .sending-box {
+        padding:
+            55px 10px;
+
+        text-align: center;
+    }
+
+
+    .spinner {
+        width: 56px;
+        height: 56px;
+
+        margin:
+            0 auto 25px;
+
+        border:
+            5px solid #E7DDD0;
+
+        border-top-color:
+            #826B55;
+
+        border-radius: 50%;
+
+        animation:
+            spin 0.8s linear infinite;
+    }
+
+
+    @keyframes spin {
+        to {
+            transform:
+                rotate(360deg);
+        }
+    }
+
+
+    .sending-box p {
+        margin-top: 10px;
+
+        color: #88796C;
+    }
+
+
+    /* ==================================================
+       FINISH
+    ================================================== */
+
+    .finish-box {
+        padding:
+            40px 10px;
+
+        text-align: center;
+    }
+
+
+    .finish-icon {
+        width: 86px;
+        height: 86px;
+
+        margin:
+            0 auto 22px;
+
+        display: flex;
+        align-items: center;
+        justify-content: center;
+
+        border-radius: 50%;
+
+        background: #E4E9DF;
+
+        color: var(--success);
+
+        font-size: 42px;
+        font-weight: bold;
+
+        box-shadow:
+            0 10px 25px
+            rgba(96, 122, 100, 0.10);
+    }
+
+
+    .finish-box h1 {
+        margin-bottom: 15px;
+    }
+
+
+    .finish-box p {
+        color: #88796C;
+
+        line-height: 1.8;
+    }
+
+
+    /* ==================================================
+       MOBILE
+    ================================================== */
+
+    @media (max-width: 600px) {
+
+        body {
+            padding: 12px;
+        }
+
+
+        .card {
+            padding:
+                28px 17px;
+
+            border-radius: 22px;
+        }
+
+
+        h1 {
+            font-size: 23px;
+        }
+
+
+        .subtitle {
+            font-size: 14px;
+        }
+
+
+        .gender-grid {
+            grid-template-columns:
+                1fr;
+        }
+
+
+        .options {
+            gap: 10px;
+        }
+
+
+        .option {
+            border-radius: 15px;
+        }
+
+
+        .option img {
+            height: 145px;
+        }
+
+
+        .option-name {
+            padding: 11px 5px;
+
+            font-size: 13px;
+        }
+
+
+        .original-image {
+            height: 220px;
+
+            border-radius: 17px;
+        }
+
+
+        .question-title {
+            font-size: 20px;
+        }
+
+
+        .quiz-header {
+            font-size: 12px;
+        }
+
+    }
+
+</style>
+
+</head>
+
+
+<body>
+
+
+<div class="container">
+
+
+    <!-- ==================================================
+         หน้าเริ่มต้น
+    =================================================== -->
+
+    <section
+        id="startPage"
+        class="card"
+    >
+
+
+        <div class="logo">
+            🎨
+        </div>
+
+
+        <h1>
+            แบบสอบถามการรับรู้สีจากภาพ
+        </h1>
+
+
+        <p class="subtitle">
+
+            แบบสอบถามนี้จัดทำขึ้นเพื่อศึกษา
+            การรับรู้และการแยกแยะสีจากภาพ
+
+            โปรดเลือกภาพที่มีสีใกล้เคียงกับ
+            สีที่คุณมองเห็นจากภาพโจทย์มากที่สุด
+
+        </p>
+
+
+        <div class="info">
+
+            <strong>
+                คำชี้แจง
+            </strong>
+
+            <br>
+
+            ในแต่ละข้อจะมีภาพโจทย์ 1 ภาพ
+            และภาพตัวเลือกจำนวน 4 ภาพ
+
+            <br>
+
+            กรุณาเลือกเพียง 1 ภาพ
+            ที่มีสีตรงหรือใกล้เคียงกับ
+            สีที่คุณมองเห็นจากภาพโจทย์มากที่สุด
+
+            <br><br>
+
+            แบบสอบถามนี้ไม่มีการแสดง
+            เฉลยหรือคะแนน
+
+        </div>
+
+
+        <div class="section-title">
+            ข้อมูลทั่วไป
+        </div>
+
+
+        <p class="gender-title">
+            กรุณาเลือกเพศ
+        </p>
+
+
+        <div class="gender-grid">
+
+
+            <label class="gender-card">
+
+                <input
+                    type="radio"
+                    name="gender"
+                    value="ชาย"
+                >
+
+                <span>
+                    ชาย
+                </span>
+
+            </label>
+
+
+            <label class="gender-card">
+
+                <input
+                    type="radio"
+                    name="gender"
+                    value="หญิง"
+                >
+
+                <span>
+                    หญิง
+                </span>
+
+            </label>
+
+
+            <label class="gender-card">
+
+                <input
+                    type="radio"
+                    name="gender"
+                    value="อื่น ๆ"
+                >
+
+                <span>
+                    อื่น ๆ
+                </span>
+
+            </label>
+
+
+            <label class="gender-card">
+
+                <input
+                    type="radio"
+                    name="gender"
+                    value="ไม่ประสงค์ระบุ"
+                >
+
+                <span>
+                    ไม่ประสงค์ระบุ
+                </span>
+
+            </label>
+
+
+        </div>
+
+
+        <div
+            id="startError"
+            class="error"
+        ></div>
+
+
+        <button
+            id="startButton"
+            class="main-btn"
+            type="button"
+        >
+            เริ่มทำแบบสอบถาม
+        </button>
+
+
+    </section>
+
+
+
+    <!-- ==================================================
+         หน้าคำถาม
+    =================================================== -->
+
+    <section
+        id="quizPage"
+        class="card hidden"
+    >
+
+
+        <div class="quiz-header">
+
+            <span id="questionNumber">
+                ข้อที่ 1
+            </span>
+
+            <span id="questionTotal">
+                1 / 16
+            </span>
+
+        </div>
+
+
+        <div class="progress-background">
+
+            <div
+                id="progress"
+                class="progress"
+            ></div>
+
+        </div>
+
+
+        <h2 class="question-title">
+
+            คุณมองเห็นภาพนี้เป็นสีใด?
+
+        </h2>
+
+
+        <p class="question-description">
+
+            เลือกภาพด้านล่างที่มีสี
+            ใกล้เคียงกับสีที่คุณเห็นมากที่สุด
+
+        </p>
+
+
+        <div class="original-label">
+            ภาพโจทย์
+        </div>
+
+
+        <div class="original-image">
+
+            <img
+                id="originalImage"
+                src=""
+                alt="ภาพโจทย์"
+            >
+
+        </div>
+
+
+        <div class="choose-text">
+            เลือกคำตอบ 1 ภาพ
+        </div>
+
+
+        <div
+            id="options"
+            class="options"
+        ></div>
+
+
+        <button
+            id="nextButton"
+            class="main-btn"
+            type="button"
+            disabled
+        >
+            ข้อถัดไป
+        </button>
+
+
+    </section>
+
+
+
+    <!-- ==================================================
+         หน้ากำลังส่ง
+    =================================================== -->
+
+    <section
+        id="sendingPage"
+        class="card hidden"
+    >
+
+        <div class="sending-box">
+
+            <div class="spinner"></div>
+
+
+            <h1>
+                กำลังส่งคำตอบ
+            </h1>
+
+
+            <p>
+                กรุณารอสักครู่
+                ระบบกำลังบันทึกข้อมูล
+            </p>
+
+        </div>
+
+    </section>
+
+
+
+    <!-- ==================================================
+         หน้าสำเร็จ
+    =================================================== -->
+
+    <section
+        id="finishPage"
+        class="card hidden"
+    >
+
+        <div class="finish-box">
+
+            <div class="finish-icon">
+                ✓
+            </div>
+
+
+            <h1>
+                ขอบคุณที่ตอบแบบสอบถาม
+            </h1>
+
+
+            <p>
+                ระบบได้รับคำตอบของคุณแล้ว
+            </p>
+
+
+            <p>
+                สามารถปิดหน้านี้ได้
+            </p>
+
+        </div>
+
+    </section>
+
+
+</div>
+
+
+
+<script>
+
+
+/* =====================================================
+   1. GOOGLE APPS SCRIPT URL
+===================================================== */
+
+const SCRIPT_URL =
+    "https://script.google.com/macros/s/AKfycbyBfPBiDOLK_YiqbFb-aFa5xCd75gUqfPhp_tOzC-lpWM0SayeqKomhIZgDj45RsdRjaw/exec";
+
+
+
+/* =====================================================
+   2. กำหนดหมายเลขของแต่ละสี
+
+   สำคัญ!
+
+   1 = Blue
+   2 = Green
+   3 = Red
+   4 = Original
+
+   ระบบจะยึดชุดนี้ทุกข้อ
+===================================================== */
+
+const OPTION_INFO = {
+    Protanopia: { number: 1, name: "ตัวเลือก 1" },
+    Deuteranopia: { number: 2, name: "ตัวเลือก 2" },
+    Tritanopia: { number: 3, name: "ตัวเลือก 3" },
+    Original: { number: 4, name: "ตัวเลือก 4" }
+};
+
+
+/* =====================================================
+   3. QUESTIONS
+
+   1 = Protanopia
+   2 = Deuteranopia
+   3 = Tritanopia
+   4 = Original
+===================================================== */
+
+const QUESTIONS = [
+    {
+        id: "Q01",
+        original: "A/OGA.jpg",
+        options: [
+            { value: "Protanopia", image: "A/A_protanopia.png" },
+            { value: "Deuteranopia", image: "A/A_deuteranopia.png" },
+            { value: "Tritanopia", image: "A/A_tritanopia.png" },
+            { value: "Original", image: "A/OGA.jpg" }
+        ]
+    },
+    {
+        id: "Q02",
+        original: "B/OGB.jpg",
+        options: [
+            { value: "Protanopia", image: "B/B_protanopia.png" },
+            { value: "Deuteranopia", image: "B/B_deuteranopia.png" },
+            { value: "Tritanopia", image: "B/B_tritanopia.png" },
+            { value: "Original", image: "B/OGB.jpg" }
+        ]
+    },
+    {
+        id: "Q03",
+        original: "E/OGE.jpg",
+        options: [
+            { value: "Protanopia", image: "E/E_protanopia.png" },
+            { value: "Deuteranopia", image: "E/E_deuteranopia.png" },
+            { value: "Tritanopia", image: "E/E_tritanopia.png" },
+            { value: "Original", image: "E/OGE.jpg" }
+        ]
+    },
+    {
+        id: "Q04",
+        original: "F/OGF.jpg",
+        options: [
+            { value: "Protanopia", image: "F/F_protanopia.png" },
+            { value: "Deuteranopia", image: "F/F_deuteranopia.png" },
+            { value: "Tritanopia", image: "F/F_tritanopia.png" },
+            { value: "Original", image: "F/OGF.jpg" }
+        ]
+    },
+    {
+        id: "Q05",
+        original: "G/OGG.jpg",
+        options: [
+            { value: "Protanopia", image: "G/G_protanopia.png" },
+            { value: "Deuteranopia", image: "G/G_deuteranopia.png" },
+            { value: "Tritanopia", image: "G/G_tritanopia.png" },
+            { value: "Original", image: "G/OGG.jpg" }
+        ]
+    },
+    {
+        id: "Q06",
+        original: "01_STOP/STOP_Original.jpg",
+        options: [
+            { value: "Protanopia", image: "01_STOP/STOP_Protanopia.jpg" },
+            { value: "Deuteranopia", image: "01_STOP/STOP_Deuteranopia.jpg" },
+            { value: "Tritanopia", image: "01_STOP/STOP_Tritanopia.jpg" },
+            { value: "Original", image: "01_STOP/STOP_Original.jpg" }
+        ]
+    },
+    {
+        id: "Q07",
+        original: "02_Traffic/Traffic_Original.jpg",
+        options: [
+            { value: "Protanopia", image: "02_Traffic/Traffic_Protanopia.jpg" },
+            { value: "Deuteranopia", image: "02_Traffic/Traffic_Deuteranopia.jpg" },
+            { value: "Tritanopia", image: "02_Traffic/Traffic_Tritanopia.jpg" },
+            { value: "Original", image: "02_Traffic/Traffic_Original.jpg" }
+        ]
+    },
+    {
+        id: "Q08",
+        original: "03_TrafficLight/TrafficLight_Original.jpg",
+        options: [
+            { value: "Protanopia", image: "03_TrafficLight/TrafficLight_Protanopia.jpg" },
+            { value: "Deuteranopia", image: "03_TrafficLight/TrafficLight_Deuteranopia.jpg" },
+            { value: "Tritanopia", image: "03_TrafficLight/TrafficLight_Tritanopia.jpg" },
+            { value: "Original", image: "03_TrafficLight/TrafficLight_Original.jpg" }
+        ]
+    },
+    {
+        id: "Q09",
+        original: "04_Blackthorn/Blackthorn_Original.jpg",
+        options: [
+            { value: "Protanopia", image: "04_Blackthorn/Blackthorn_Protanopia.jpg" },
+            { value: "Deuteranopia", image: "04_Blackthorn/Blackthorn_Deuteranopia.jpg" },
+            { value: "Tritanopia", image: "04_Blackthorn/Blackthorn_Tritanopia.jpg" },
+            { value: "Original", image: "04_Blackthorn/Blackthorn_Original.jpg" }
+        ]
+    },
+    {
+        id: "Q10",
+        original: "05_PoppyField/PoppyField_Original.jpg",
+        options: [
+            { value: "Protanopia", image: "05_PoppyField/PoppyField_Protanopia.jpg" },
+            { value: "Deuteranopia", image: "05_PoppyField/PoppyField_Deuteranopia.jpg" },
+            { value: "Tritanopia", image: "05_PoppyField/PoppyField_Tritanopia.jpg" },
+            { value: "Original", image: "05_PoppyField/PoppyField_Original.jpg" }
+        ]
+    },
+    {
+        id: "Q11",
+        original: "06_Football/Football_Original.jpg",
+        options: [
+            { value: "Protanopia", image: "06_Football/Football_Protanopia.jpg" },
+            { value: "Deuteranopia", image: "06_Football/Football_Deuteranopia.jpg" },
+            { value: "Tritanopia", image: "06_Football/Football_Tritanopia.jpg" },
+            { value: "Original", image: "06_Football/Football_Original.jpg" }
+        ]
+    },
+    {
+        id: "Q12",
+        original: "07_RedBarn/RedBarn_Original.jpg",
+        options: [
+            { value: "Protanopia", image: "07_RedBarn/RedBarn_Protanopia.jpg" },
+            { value: "Deuteranopia", image: "07_RedBarn/RedBarn_Deuteranopia.jpg" },
+            { value: "Tritanopia", image: "07_RedBarn/RedBarn_Tritanopia.jpg" },
+            { value: "Original", image: "07_RedBarn/RedBarn_Original.jpg" }
+        ]
+    },
+    {
+        id: "Q13",
+        original: "08_Rainbow/Rainbow_Original.jpg",
+        options: [
+            { value: "Protanopia", image: "08_Rainbow/Rainbow_Protanopia.jpg" },
+            { value: "Deuteranopia", image: "08_Rainbow/Rainbow_Deuteranopia.jpg" },
+            { value: "Tritanopia", image: "08_Rainbow/Rainbow_Tritanopia.jpg" },
+            { value: "Original", image: "08_Rainbow/Rainbow_Original.jpg" }
+        ]
+    },
+    {
+        id: "Q14",
+        original: "09_Strawberries/Strawberries_Original.jpg",
+        options: [
+            { value: "Protanopia", image: "09_Strawberries/Strawberries_Protanopia.jpg" },
+            { value: "Deuteranopia", image: "09_Strawberries/Strawberries_Deuteranopia.jpg" },
+            { value: "Tritanopia", image: "09_Strawberries/Strawberries_Tritanopia.jpg" },
+            { value: "Original", image: "09_Strawberries/Strawberries_Original.jpg" }
+        ]
+    },
+    {
+        id: "Q15",
+        original: "10_Apples/Apples_Original.jpg",
+        options: [
+            { value: "Protanopia", image: "10_Apples/Apples_Protanopia.jpg" },
+            { value: "Deuteranopia", image: "10_Apples/Apples_Deuteranopia.jpg" },
+            { value: "Tritanopia", image: "10_Apples/Apples_Tritanopia.jpg" },
+            { value: "Original", image: "10_Apples/Apples_Original.jpg" }
+        ]
+    },
+    {
+        id: "Q16",
+        original: "11_Vegetables/Vegetables_Original.jpg",
+        options: [
+            { value: "Protanopia", image: "11_Vegetables/Vegetables_Protanopia.jpg" },
+            { value: "Deuteranopia", image: "11_Vegetables/Vegetables_Deuteranopia.jpg" },
+            { value: "Tritanopia", image: "11_Vegetables/Vegetables_Tritanopia.jpg" },
+            { value: "Original", image: "11_Vegetables/Vegetables_Original.jpg" }
+        ]
+    }
+];
+
+
+/* =====================================================
+   4. ตัวแปรระบบ
+===================================================== */
+
+let currentQuestion =
+    0;
+
+
+let selectedOption =
+    null;
+
+
+let gender =
+    "";
+
+
+let answers =
+    [];
+
+
+let isSubmitting =
+    false;
+
+
+
+/* =====================================================
+   5. เริ่มแบบสอบถาม
+===================================================== */
+
+function startSurvey() {
+
+
+    const selectedGender =
+        document.querySelector(
+            'input[name="gender"]:checked'
+        );
+
+
+    /* ยังไม่ได้เลือกเพศ */
+
+    if (!selectedGender) {
+
+
+        document.getElementById(
+            "startError"
+        ).textContent =
+            "กรุณาเลือกเพศก่อนเริ่มทำแบบสอบถาม";
+
+
+        return;
+
+    }
+
+
+
+    /* เก็บเพศ */
+
+    gender =
+        selectedGender.value;
+
+
+
+    document.getElementById(
+        "startError"
+    ).textContent =
+        "";
+
+
+
+    /* Reset */
+
+    currentQuestion =
+        0;
+
+
+    selectedOption =
+        null;
+
+
+    answers =
+        [];
+
+
+
+    /* ไปหน้าคำถาม */
+
+    showPage(
+        "quizPage"
+    );
+
+
+    showQuestion();
+
+}
+
+
+
+/* =====================================================
+   6. แสดงคำถาม
+===================================================== */
+
+function showQuestion() {
+
+
+    selectedOption =
+        null;
+
+
+
+    const question =
+        QUESTIONS[
+            currentQuestion
+        ];
+
+
+
+    /* -------------------------------
+       หมายเลขข้อ
+    -------------------------------- */
+
+    document.getElementById(
+        "questionNumber"
+    ).textContent =
+        `ข้อที่ ${currentQuestion + 1}`;
+
+
+
+    document.getElementById(
+        "questionTotal"
+    ).textContent =
+        `${currentQuestion + 1} / ${QUESTIONS.length}`;
+
+
+
+    /* -------------------------------
+       Progress
+    -------------------------------- */
+
+    const progressPercent =
+
+        (
+            (currentQuestion + 1)
+            /
+            QUESTIONS.length
+        )
+
+        * 100;
+
+
+
+    document.getElementById(
+        "progress"
+    ).style.width =
+        `${progressPercent}%`;
+
+
+
+    /* -------------------------------
+       ภาพโจทย์
+    -------------------------------- */
+
+    const originalImage =
+        document.getElementById(
+            "originalImage"
+        );
+
+
+    originalImage.src =
+        question.original;
+
+
+    originalImage.alt =
+        `ภาพโจทย์ข้อที่ ${currentQuestion + 1}`;
+
+
+
+    /* -------------------------------
+       สร้างตัวเลือก
+    -------------------------------- */
+
+    const optionsContainer =
+        document.getElementById(
+            "options"
+        );
+
+
+    optionsContainer.innerHTML =
+        "";
+
+
+
+    question.options.forEach(
+
+        function(option) {
+
+
+            /*
+                อ่านหมายเลขจากสี
+
+                Blue     -> 1
+                Green    -> 2
+                Red      -> 3
+                Original -> 4
+            */
+
+            const optionInfo =
+                OPTION_INFO[
+                    option.value
+                ];
+
+
+
+            const button =
+                document.createElement(
+                    "button"
+                );
+
+
+            button.type =
+                "button";
+
+
+            button.className =
+                "option";
+
+
+
+            button.innerHTML = `
+
+                <img
+                    src="${option.image}"
+                    alt="ตัวเลือก ${optionInfo.number}"
+                >
+
+                <div class="option-name">
+
+                    ตัวเลือก ${optionInfo.number}
+
+                </div>
+
+            `;
+
+
+
+            /*
+                ใช้ value ในการเลือก
+
+                ไม่ใช้ index
+
+                จึงลดโอกาสเลขกับสีสลับกัน
+            */
+
+            button.addEventListener(
+
+                "click",
+
+                function() {
+
+                    selectOption(
+                        option.value
+                    );
+
+                }
+
+            );
+
+
+
+            /*
+                ใส่ข้อมูลสีไว้กับปุ่ม
+            */
+
+            button.dataset.value =
+                option.value;
+
+
+
+            optionsContainer
+                .appendChild(
+                    button
+                );
+
+        }
+
+    );
+
+
+
+    /* -------------------------------
+       ปุ่มถัดไป
+    -------------------------------- */
+
+    const nextButton =
+        document.getElementById(
+            "nextButton"
+        );
+
+
+    nextButton.disabled =
+        true;
+
+
+
+    if (
+
+        currentQuestion ===
+        QUESTIONS.length - 1
+
+    ) {
+
+
+        nextButton.textContent =
+            "ส่งคำตอบ";
+
+
+    }
+
+    else {
+
+
+        nextButton.textContent =
+            "ข้อถัดไป";
+
+
+    }
+
+}
+
+
+
+/* =====================================================
+   7. เลือกคำตอบ
+
+   selectedOption จะเก็บ:
+
+   Blue
+   Green
+   Red
+   Original
+
+   แทนการเก็บ index 0 1 2 3
+===================================================== */
+
+function selectOption(value) {
+
+
+    selectedOption =
+        value;
+
+
+
+    const buttons =
+        document.querySelectorAll(
+            ".option"
+        );
+
+
+
+    buttons.forEach(
+
+        function(button) {
+
+
+            const buttonValue =
+                button.dataset.value;
+
+
+
+            button.classList.toggle(
+
+                "selected",
+
+                buttonValue ===
+                value
+
+            );
+
+        }
+
+    );
+
+
+
+    /* เปิดปุ่ม */
+
+    document.getElementById(
+        "nextButton"
+    ).disabled =
+        false;
+
+}
+
+
+
+/* =====================================================
+   8. บันทึกคำตอบและไปข้อถัดไป
+===================================================== */
+
+function nextQuestion() {
+
+
+    if (
+        selectedOption === null
+    ) {
+
+        return;
+
+    }
+
+
+
+    const question =
+        QUESTIONS[
+            currentQuestion
+        ];
+
+
+
+    /*
+        หา option ที่มี value
+        ตรงกับสิ่งที่ผู้ตอบเลือก
+    */
+
+    const answer =
+        question.options.find(
+
+            function(option) {
+
+                return (
+                    option.value ===
+                    selectedOption
+                );
+
+            }
+
+        );
+
+
+
+    if (!answer) {
+
+        alert(
+            "ไม่พบข้อมูลคำตอบ"
+        );
+
+        return;
+
+    }
+
+
+
+    /*
+        อ่านหมายเลขจาก OPTION_INFO
+
+        ไม่ใช้ตำแหน่ง array
+    */
+
+    const optionInfo =
+        OPTION_INFO[
+            answer.value
+        ];
+
+
+
+    /* -------------------------------
+       เก็บคำตอบ
+
+       เช่น:
+
+       questionId: Q01
+       selectedOption: 2
+       selectedValue: Green
+       sheetValue: 2 - Green
+    -------------------------------- */
+
+    answers.push({
+
+        questionId:
+            question.id,
+
+
+        selectedOption:
+            optionInfo.number,
+
+
+        selectedValue:
+            answer.value,
+
+
+        sheetValue:
+            `${optionInfo.number} - ${answer.value}`,
+
+
+        selectedImage:
+            answer.image
+
+    });
+
+
+
+    console.log(
+
+        "บันทึกคำตอบ:",
+
+        answers[
+            answers.length - 1
+        ]
+
+    );
+
+
+
+    /* -------------------------------
+       ไปข้อถัดไป
+    -------------------------------- */
+
+    currentQuestion++;
+
+
+
+    if (
+
+        currentQuestion <
+        QUESTIONS.length
+
+    ) {
+
+
+        showQuestion();
+
+
+    }
+
+    else {
+
+
+        finishSurvey();
+
+
+    }
+
+}
+
+
+
+/* =====================================================
+   9. ส่งข้อมูล
+===================================================== */
+
+async function finishSurvey() {
+
+
+    /*
+        ป้องกันการกดส่งซ้ำ
+    */
+
+    if (isSubmitting) {
+
+        return;
+
+    }
+
+
+    isSubmitting =
+        true;
+
+
+
+    /* หน้ากำลังส่ง */
+
+    showPage(
+        "sendingPage"
+    );
+
+
+
+    /*
+        ข้อมูลที่จะส่ง
+
+        gender
+        Q01-Q05
+    */
+
+    const surveyData = {
+
+        gender:
+            gender,
+
+        answers:
+            answers
+
+    };
+
+
+
+    console.log(
+        "ข้อมูลทั้งหมดที่จะส่ง:",
+        surveyData
+    );
+
+
+
+    /*
+        แปลง JSON
+        ใส่ลง parameter ชื่อ payload
+    */
+
+    const formData =
+        new URLSearchParams();
+
+
+
+    formData.append(
+
+        "payload",
+
+        JSON.stringify(
+            surveyData
+        )
+
+    );
+
+
+
+    try {
+
+
+        await fetch(
+
+            SCRIPT_URL,
+
+            {
+
+                method:
+                    "POST",
+
+                mode:
+                    "no-cors",
+
+                body:
+                    formData
+
+            }
+
+        );
+
+
+
+        console.log(
+            "ส่ง Request ไป Apps Script แล้ว"
+        );
+
+
+
+        /*
+            ไปหน้าขอบคุณ
+        */
+
+        showPage(
+            "finishPage"
+        );
+
+
+    }
+
+    catch (error) {
+
+
+        console.error(
+            "เกิดข้อผิดพลาด:",
+            error
+        );
+
+
+        alert(
+            "ไม่สามารถส่งข้อมูลได้ กรุณาตรวจสอบอินเทอร์เน็ตแล้วลองใหม่"
+        );
+
+
+        /*
+            กลับข้อสุดท้าย
+        */
+
+        currentQuestion =
+            QUESTIONS.length - 1;
+
+
+        showPage(
+            "quizPage"
+        );
+
+
+        showQuestion();
+
+
+    }
+
+    finally {
+
+
+        isSubmitting =
+            false;
+
+    }
+
+}
+
+
+
+/* =====================================================
+   10. เปลี่ยนหน้า
+===================================================== */
+
+function showPage(pageId) {
+
+
+    document
+        .querySelectorAll(
+            ".card"
+        )
+        .forEach(
+
+            function(page) {
+
+
+                page.classList.add(
+                    "hidden"
+                );
+
+
+            }
+
+        );
+
+
+
+    document
+        .getElementById(
+            pageId
+        )
+        .classList.remove(
+            "hidden"
+        );
+
+
+
+    window.scrollTo({
+
+        top: 0,
+
+        behavior: "smooth"
+
+    });
+
+}
+
+
+
+/* =====================================================
+   11. เชื่อมปุ่ม
+===================================================== */
+
+document
+    .getElementById(
+        "startButton"
+    )
+    .addEventListener(
+
+        "click",
+
+        startSurvey
+
+    );
+
+
+
+document
+    .getElementById(
+        "nextButton"
+    )
+    .addEventListener(
+
+        "click",
+
+        nextQuestion
+
+    );
+
+
+
+/* =====================================================
+   12. ตรวจสอบตอนเปิดเว็บ
+===================================================== */
+
+console.log(
+    "แบบสอบถามพร้อมใช้งาน"
+);
+
+
+console.log(
+    "จำนวนคำถาม:",
+    QUESTIONS.length
+);
+
+
+console.log(
+    "ระบบตัวเลือก:",
+    OPTION_INFO
+);
+
+
+</script>
+
+
+</body>
+
+</html>
