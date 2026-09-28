@@ -840,6 +840,16 @@
 
     }
 
+
+    .result-counts { margin-top:24px; display:grid; gap:14px; }
+    .result-row { padding:16px; border:1px solid var(--border); border-radius:14px; }
+    .result-row-header { display:flex; justify-content:space-between; flex-wrap:wrap; gap:8px; }
+    .result-track { height:10px; margin-top:12px; border-radius:8px; background:var(--cream-soft); overflow:hidden; }
+    .result-fill { height:100%; background:var(--accent-dark); }
+    .result-note { margin-top:22px; line-height:1.9; color:var(--brown-soft); }
+    #resultExplanation { margin-top:10px; }
+    .info a { color:var(--accent-dark); text-underline-offset:3px; }
+    button:focus-visible, a:focus-visible { outline:3px solid var(--accent-dark); outline-offset:3px; }
 </style>
 
 </head>
@@ -901,8 +911,8 @@
 
             <br><br>
 
-            แบบสอบถามนี้ไม่มีการแสดง
-            เฉลยหรือคะแนน
+            เมื่อทำครบ ระบบจะแสดงสรุปจำนวนคำตอบแต่ละรูปแบบ
+            โดยไม่วินิจฉัยว่าคุณมีภาวะตาบอดสีหรือไม่
 
         </div>
 
@@ -1125,34 +1135,16 @@
          หน้าสำเร็จ
     =================================================== -->
 
-    <section
-        id="finishPage"
-        class="card hidden"
-    >
-
-        <div class="finish-box">
-
-            <div class="finish-icon">
-                ✓
-            </div>
-
-
-            <h1>
-                ขอบคุณที่ตอบแบบสอบถาม
-            </h1>
-
-
-            <p>
-                ระบบได้รับคำตอบของคุณแล้ว
-            </p>
-
-
-            <p>
-                สามารถปิดหน้านี้ได้
-            </p>
-
-        </div>
-
+    <section id="finishPage" class="card hidden" aria-labelledby="resultHeading">
+        <h1 id="resultHeading" tabindex="-1">สรุปคำตอบการรับรู้สีจากภาพ</h1>
+        <p class="subtitle">ผลจากแบบสอบถามครั้งนี้ ไม่ใช่ผลวินิจฉัยภาวะตาบอดสี</p>
+        <div class="info"><strong id="resultSummary"></strong><p id="resultExplanation"></p></div>
+        <div id="resultCounts" class="result-counts"></div>
+        <p class="result-note">ร้อยละแสดงสัดส่วนคำตอบที่เลือก ไม่ใช่โอกาสเป็นโรคหรือระดับความรุนแรง ชื่อ Protanopia, Deuteranopia และ Tritanopia เป็นชื่อรูปแบบการแปลงสีของภาพตัวเลือก ไม่ใช่ผลวินิจฉัยของคุณ</p>
+        <div class="info"><strong>แล้วการมองเห็นสีของเราเป็นอย่างไร?</strong><p>แบบสอบถามนี้ยังบอกไม่ได้ว่าคุณมีการมองเห็นสีปกติหรือมีภาวะตาบอดสี เพราะยังไม่มีเกณฑ์แปลผลที่ผ่านการตรวจสอบ แม้เลือกภาพต้นฉบับครบทุกข้อก็ยังใช้ยืนยันไม่ได้ หากสงสัยเรื่องการแยกแยะสี ควรรับการตรวจการมองเห็นสีกับจักษุแพทย์</p>
+        <a href="https://www.nei.nih.gov/eye-health-information/eye-conditions-and-diseases/color-blindness/testing-color-vision-deficiency" target="_blank" rel="noopener noreferrer">อ่านเรื่องการตรวจการมองเห็นสีจาก National Eye Institute</a></div>
+        <p id="submissionStatus" class="result-note" role="status" aria-live="polite"></p>
+        <button class="main-btn" type="button" onclick="window.location.reload()">กลับไปหน้าเริ่มต้น</button>
     </section>
 
 
@@ -1915,169 +1907,75 @@ function nextQuestion() {
    9. ส่งข้อมูล
 ===================================================== */
 
-async function finishSurvey() {
-
-
-    /*
-        ป้องกันการกดส่งซ้ำ
-    */
-
-    if (isSubmitting) {
-
-        return;
-
+// Summarize selections only: no diagnostic thresholds or disease predictions.
+function summarizeAnswers(records) {
+    const counts = { Original: 0, Protanopia: 0, Deuteranopia: 0, Tritanopia: 0 };
+    const ids = new Set();
+    for (const answer of records) {
+        const question = QUESTIONS.find(q => q.id === answer.questionId);
+        if (!question || ids.has(answer.questionId) ||
+            !Object.prototype.hasOwnProperty.call(counts, answer.selectedValue) ||
+            !question.options.some(o => o.value === answer.selectedValue)) {
+            throw new Error("ข้อมูลคำตอบไม่ถูกต้อง");
+        }
+        ids.add(answer.questionId);
+        counts[answer.selectedValue]++;
     }
-
-
-    isSubmitting =
-        true;
-
-
-
-    /* หน้ากำลังส่ง */
-
-    showPage(
-        "sendingPage"
-    );
-
-
-
-    /*
-        ข้อมูลที่จะส่ง
-
-        gender
-        Q01-Q05
-    */
-
-    const surveyData = {
-
-        gender:
-            gender,
-
-        answers:
-            answers
-
-    };
-
-
-
-    console.log(
-        "ข้อมูลทั้งหมดที่จะส่ง:",
-        surveyData
-    );
-
-
-
-    /*
-        แปลง JSON
-        ใส่ลง parameter ชื่อ payload
-    */
-
-    const formData =
-        new URLSearchParams();
-
-
-
-    formData.append(
-
-        "payload",
-
-        JSON.stringify(
-            surveyData
-        )
-
-    );
-
-
-
-    try {
-
-
-        await fetch(
-
-            SCRIPT_URL,
-
-            {
-
-                method:
-                    "POST",
-
-                mode:
-                    "no-cors",
-
-                body:
-                    formData
-
-            }
-
-        );
-
-
-
-        console.log(
-            "ส่ง Request ไป Apps Script แล้ว"
-        );
-
-
-
-        /*
-            ไปหน้าขอบคุณ
-        */
-
-        showPage(
-            "finishPage"
-        );
-
-
-    }
-
-    catch (error) {
-
-
-        console.error(
-            "เกิดข้อผิดพลาด:",
-            error
-        );
-
-
-        alert(
-            "ไม่สามารถส่งข้อมูลได้ กรุณาตรวจสอบอินเทอร์เน็ตแล้วลองใหม่"
-        );
-
-
-        /*
-            กลับข้อสุดท้าย
-        */
-
-        currentQuestion =
-            QUESTIONS.length - 1;
-
-
-        showPage(
-            "quizPage"
-        );
-
-
-        showQuestion();
-
-
-    }
-
-    finally {
-
-
-        isSubmitting =
-            false;
-
-    }
-
+    if (ids.size !== QUESTIONS.length) throw new Error("กรุณาตอบให้ครบทุกข้อ");
+    return { counts, total: records.length };
 }
 
+function renderResults(summary) {
+    const { counts, total } = summary;
+    const labels = {
+        Original: "ภาพต้นฉบับ",
+        Protanopia: "ภาพแปลงสีแบบ Protanopia",
+        Deuteranopia: "ภาพแปลงสีแบบ Deuteranopia",
+        Tritanopia: "ภาพแปลงสีแบบ Tritanopia"
+    };
+    document.getElementById("resultSummary").textContent =
+        `คุณเลือกภาพต้นฉบับ ${counts.Original} จาก ${total} ข้อ`;
+    document.getElementById("resultExplanation").textContent =
+        `และเลือกภาพแปลงสีรวม ${total - counts.Original} ข้อ ข้อมูลด้านล่างสรุปเฉพาะสิ่งที่คุณเลือกในครั้งนี้`;
+    const container = document.getElementById("resultCounts");
+    container.replaceChildren();
+    for (const [key, count] of Object.entries(counts)) {
+        const percent = count / total * 100;
+        const row = document.createElement("div");
+        row.className = "result-row";
+        row.innerHTML = `<div class="result-row-header"><strong>${labels[key]}</strong><span>${count} ข้อ (${percent.toFixed(2)}%)</span></div><div class="result-track" aria-hidden="true"><div class="result-fill" style="width:${percent}%"></div></div>`;
+        container.appendChild(row);
+    }
+}
 
-
-/* =====================================================
-   10. เปลี่ยนหน้า
-===================================================== */
+async function finishSurvey() {
+    if (isSubmitting) return;
+    let summary;
+    try { summary = summarizeAnswers(answers); }
+    catch (error) { alert(error.message); return; }
+    isSubmitting = true;
+    renderResults(summary);
+    showPage("finishPage");
+    document.getElementById("resultHeading").focus({ preventScroll: true });
+    const status = document.getElementById("submissionStatus");
+    status.textContent = "สรุปคำตอบแล้ว กำลังส่งข้อมูลแบบสอบถาม…";
+    const controller = new AbortController();
+    const timeout = setTimeout(() => controller.abort(), 15000);
+    const formData = new URLSearchParams();
+    formData.append("payload", JSON.stringify({ gender, answers }));
+    try {
+        await fetch(SCRIPT_URL, {
+            method: "POST", mode: "no-cors", body: formData,
+            signal: controller.signal
+        });
+        status.textContent = "ส่งคำขอจัดเก็บข้อมูลแล้ว แต่ยังยืนยันการบันทึกไม่ได้ ผลสรุปด้านบนคำนวณจากคำตอบบนอุปกรณ์นี้";
+    } catch (error) {
+        status.textContent = "ยังยืนยันการส่งข้อมูลไม่ได้ โปรดแจ้งผู้จัดทำให้ตรวจสอบการบันทึก ผลสรุปด้านบนยังดูได้ตามปกติ";
+    } finally {
+        clearTimeout(timeout);
+        isSubmitting = false;
+    }
+}
 
 function showPage(pageId) {
 
